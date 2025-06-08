@@ -1,0 +1,147 @@
+{% extends 'ocr_app/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center my-4">Weather-based Clothing Recommendations</h2>
+
+    <form method="post" class="mb-4">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="city">Enter City Name:</label>
+            <input type="text" class="form-control" id="city" name="city" required>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Get Recommendations</button>
+    </form>
+
+    {% if error %}
+        <div class="alert alert-danger">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    {% if weather %}
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h3 class="mb-0">Current Weather in {{ city }}</h3>
+            </div>
+            <div class="card-body">
+                <p><strong>Temperature:</strong> {{ weather.temperature }}°C</p>
+                <p><strong>Humidity:</strong> {{ weather.humidity }}%</p>
+                <p><strong>Weather:</strong> {{ weather.condition }}</p>
+            </div>
+        </div>
+
+        {% if recommendation_text %}
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">Clothing Advice</h3>
+                </div>
+                <div class="card-body">
+                    <pre class="recommendation-text">{{ recommendation_text }}</pre>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if recommendations %}
+            <h3 class="mb-3">Recommended Clothing</h3>
+            <div class="row">
+                {% for item in recommendations %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            {% if item.image_url %}
+                                <img src="{{ item.image_url }}" class="card-img-top clickable-image" 
+                                     alt="Clothing Image" data-bs-toggle="modal" 
+                                     data-bs-target="#labelModal{{ item.id }}">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">Category: {{ item.category }}</h5>
+                                {% if item.materials %}
+                                    <p class="card-text">Materials: {{ item.materials|join:", " }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Label Modal for each item -->
+                        <div class="modal fade" id="labelModal{{ item.id }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Label Information</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                {% if item.label_image %}
+                                                <img src="{{ item.label_image }}" class="img-fluid" alt="Label Image">
+                                                {% else %}
+                                                <img src="{{ item.image_url }}" class="img-fluid" alt="Clothing Image">
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h6>Category</h6>
+                                                <p>{{ item.category }}</p>
+                                                
+                                                <h6>Materials</h6>
+                                                <p>{{ item.materials|join:", " }}</p>
+                                                
+                                                {% if item.recognized_text %}
+                                                    <h6>Label Text</h6>
+                                                    <p>{{ item.recognized_text }}</p>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
+
+<style>
+.card-img-top {
+    height: 250px;
+    object-fit: contain;
+    padding: 10px;
+    background-color: #f8f9fa;
+}
+
+.recommendation-text {
+    white-space: pre-wrap;
+    font-family: inherit;
+    border: none;
+    background: none;
+    margin: 0;
+    padding: 0;
+}
+
+.card {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.clickable-image {
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.clickable-image:hover {
+    opacity: 0.8;
+}
+
+.modal-body img {
+    max-height: 400px;
+    width: auto;
+    margin: 0 auto;
+    display: block;
+}
+</style>
+{% endblock %}

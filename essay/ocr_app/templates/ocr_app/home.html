@@ -1,0 +1,113 @@
+{% extends 'ocr_app/base.html' %}
+
+{% block content %}
+<div class="menu">
+    <a href="{% url 'batch_upload' %}" class="menu-item upload">
+        <div class="icon"><i class="fas fa-upload"></i></div>
+        <div class="content">
+            <h2>Upload Clothing</h2>
+            <p>Upload clothing and label images</p>
+        </div>
+    </a>
+    
+    <a href="{% url 'clothing_list' %}" class="menu-item list">
+        <div class="icon"><i class="fas fa-tshirt"></i></div>
+        <div class="content">
+            <h2>Clothing List</h2>
+            <p>View all uploaded clothing items</p>
+        </div>
+    </a>
+    
+    <a href="{% url 'query' %}" class="menu-item weather">
+        <div class="icon"><i class="fas fa-cloud-sun"></i></div>
+        <div class="content">
+            <h2>Weather Recommendations</h2>
+            <p>Get clothing suggestions based on weather</p>
+        </div>
+    </a>
+</div>
+
+<style>
+    .menu {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        padding: 2rem;
+    }
+    
+    .menu-item {
+        text-decoration: none;
+        color: inherit;
+        background: #fff;
+        padding: 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        text-align: center;
+        transition: all 0.3s ease;
+        width: 280px;
+        border: 2px solid transparent;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .menu-item.upload {
+        background: linear-gradient(145deg, #ffffff, #f0f7ff);
+        border-color: #4a90e2;
+    }
+    
+    .menu-item.list {
+        background: linear-gradient(145deg, #ffffff, #fff4f0);
+        border-color: #e27c4a;
+    }
+    
+    .menu-item.weather {
+        background: linear-gradient(145deg, #ffffff, #f0fff4);
+        border-color: #4ae2a0;
+    }
+    
+    .menu-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+    
+    .menu-item.upload .icon {
+        color: #4a90e2;
+    }
+    
+    .menu-item.list .icon {
+        color: #e27c4a;
+    }
+    
+    .menu-item.weather .icon {
+        color: #4ae2a0;
+    }
+    
+    .icon {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        transition: transform 0.3s ease;
+    }
+    
+    .menu-item:hover .icon {
+        transform: scale(1.1);
+    }
+    
+    .content {
+        padding: 1rem;
+    }
+    
+    h2 {
+        margin: 0.5rem 0;
+        color: #333;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+    
+    p {
+        margin: 0.5rem 0 0;
+        color: #666;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock content %}

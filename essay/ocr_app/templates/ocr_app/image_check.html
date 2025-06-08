@@ -1,0 +1,52 @@
+{% extends 'ocr_app/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Image Storage Check</h2>
+    
+    <h3>Database Records</h3>
+    <div class="row">
+        {% for image in images %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5>ID: {{ image.id }}</h5>
+                        <p>Image: {{ image.image.name }}</p>
+                        <p>Label: {{ image.label_image.name }}</p>
+                        <p>Created: {{ image.created_at }}</p>
+                        {% if image.image %}
+                            <img src="{{ image.image.url }}" class="img-fluid" alt="Clothing">
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>No records in database</p>
+        {% endfor %}
+    </div>
+    
+    <h3>Files in Media Directory</h3>
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Clothing Images</h4>
+            <ul>
+                {% for file in clothing_files %}
+                    <li>{{ file }}</li>
+                {% empty %}
+                    <li>No files found</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <h4>Label Images</h4>
+            <ul>
+                {% for file in label_files %}
+                    <li>{{ file }}</li>
+                {% empty %}
+                    <li>No files found</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %} 

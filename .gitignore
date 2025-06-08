@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+*.pyd
+*.dll
+*.so
+*.dylib
+
+# Media and model files
+essay/media/
+essay/en_PP-OCRv3_rec_infer/
+essay/japan_PP-OCRv4_rec_infer/
+*.log
+
+# Database
+*.sqlite3
+
+ClothingAnalysis/essay/media/clothing_images
+ClothingAnalysis/essay/media/label_images
+

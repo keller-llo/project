@@ -1,0 +1,53 @@
+{% extends 'ocr_app/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center my-4">上传数据管理</h2>
+    
+    <div class="row">
+        {% for clothing in clothing_images %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="{{ clothing.image.url }}" class="card-img-top" alt="Clothing Image">
+                <div class="card-body">
+                    <h5 class="card-title">Clothing Item {{ clothing.id }}</h5>
+                    {% if clothing.materials %}
+                    <p class="card-text">Materials: {{ clothing.materials|join:", " }}</p>
+                    {% endif %}
+                    <button class="btn btn-danger delete-btn" data-id="{{ clothing.id }}">删除</button>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <p>No clothing items available.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+document.querySelectorAll('.delete-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const id = this.dataset.id;
+        if (confirm('确定要删除这件衣物吗？')) {
+            fetch('/delete-clothing/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id: id })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('删除失败：' + data.message);
+                }
+            });
+        }
+    });
+});
+</script>
+{% endblock %} 

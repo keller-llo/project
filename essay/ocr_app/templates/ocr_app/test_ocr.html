@@ -1,0 +1,97 @@
+{% extends 'ocr_app/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>OCR测试页面</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">上传测试图片</h5>
+                    <form id="testOcrForm" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="testImage" class="form-label">选择图片</label>
+                            <input type="file" class="form-control" id="testImage" name="test_image" accept="image/*" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">测试OCR</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">OCR结果</h5>
+                    <div id="resultArea">
+                        <div class="mb-3">
+                            <h6>识别的文本:</h6>
+                            <pre id="recognizedText" class="bg-light p-2" style="white-space: pre-wrap;"></pre>
+                        </div>
+                        <div class="mb-3">
+                            <h6>识别的材料:</h6>
+                            <pre id="materials" class="bg-light p-2"></pre>
+                        </div>
+                        <div class="mb-3">
+                            <h6>语言:</h6>
+                            <pre id="language" class="bg-light p-2"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('testOcrForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    // 清空之前的结果
+    document.getElementById('recognizedText').textContent = '处理中...';
+    document.getElementById('materials').textContent = '处理中...';
+    document.getElementById('language').textContent = '处理中...';
+    
+    fetch('/test-ocr/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            document.getElementById('recognizedText').textContent = data.recognized_texts.join('\n');
+            document.getElementById('materials').textContent = JSON.stringify(data.materials, null, 2);
+            document.getElementById('language').textContent = data.language;
+        } else {
+            document.getElementById('recognizedText').textContent = '错误: ' + data.message;
+            document.getElementById('materials').textContent = '';
+            document.getElementById('language').textContent = '';
+        }
+    })
+    .catch(error => {
+        document.getElementById('recognizedText').textContent = '发生错误: ' + error;
+        document.getElementById('materials').textContent = '';
+        document.getElementById('language').textContent = '';
+    });
+});
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %} 

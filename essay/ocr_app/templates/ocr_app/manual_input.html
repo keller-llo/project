@@ -1,0 +1,69 @@
+{% extends 'ocr_app/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Manual Input</h2>
+    <div class="row">
+        <div class="col-md-6">
+            {% if clothing.image %}
+                <img src="{{ clothing.image.url }}" class="img-fluid mb-3" alt="Clothing Image">
+            {% endif %}
+            
+            <form id="materialForm">
+                <div class="form-group mb-3">
+                    <label for="materials">Materials (comma separated):</label>
+                    <input type="text" class="form-control" id="materials" name="materials" 
+                           placeholder="Enter materials (e.g., cotton, polyester)">
+                </div>
+                <button type="button" class="btn btn-primary" onclick="submitMaterials()">Save</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function submitMaterials() {
+    const materialsInput = document.getElementById('materials').value;
+    const materials = materialsInput.split(',').map(m => m.trim()).filter(m => m);
+    
+    fetch('{% url "manual_input" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            clothing_id: {{ clothing.id }},
+            materials: materials
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = '{% url "clothing_list" %}';
+        } else {
+            alert('Error saving materials: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error saving materials');
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %} 

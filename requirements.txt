@@ -1,0 +1,32 @@
+# 基础工具
+setuptools
+wheel
+
+# Web框架
+django
+
+# 数据处理
+numpy
+pandas
+
+# 图像处理
+Pillow
+opencv-python
+
+# 机器学习
+scikit-learn
+
+# OCR相关
+paddlepaddle
+paddleocr>=2.0.1
+
+# 语言检测
+langdetect
+
+# 其他依赖
+shapely
+pyclipper
+
+# 文本匹配
+fuzzywuzzy==0.18.0
+python-Levenshtein==0.21.1 
